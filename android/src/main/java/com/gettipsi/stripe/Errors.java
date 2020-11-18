@@ -28,12 +28,17 @@ public final class Errors {
   }
 
   static String toErrorCode(@NonNull Exception exception) {
-    ArgCheck.nonNull(exception);
-    String simpleName = exception.getClass().getSimpleName();
-    String errorCode = exceptionNameToErrorCode.get(simpleName);
-    ArgCheck.nonNull(errorCode, simpleName);
-
-    return errorCode;
+    try {
+      ArgCheck.nonNull(exception);
+      String simpleName = exception.getClass().getSimpleName();
+      String errorCode = exceptionNameToErrorCode.get(simpleName);
+      if (errorCode == null) {
+        errorCode = simpleName;
+      }
+      return errorCode;
+    } catch (Exception e) {
+      return exceptionNameToErrorCode.get("CardException");
+    }
   }
 
   static String getErrorCode(@NonNull ReadableMap errorCodes, @NonNull String errorKey) {
